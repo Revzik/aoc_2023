@@ -1,4 +1,4 @@
-package dev.revzik.aoc2023;
+package dev.revzik.aoc2023.day1;
 
 import dev.revzik.aoc2023.util.FileUtils;
 
