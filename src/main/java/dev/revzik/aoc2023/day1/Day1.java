@@ -21,7 +21,7 @@ public class Day1 {
     public static void main(String[] args) {
         int sum = 0;
 
-        for (String line : FileUtils.readFileToLines(Path.of("day1", "input.txt"))) {
+        for (String line : FileUtils.readFileToLineList(Path.of("day1", "input.txt"))) {
             sum += findValue(line);
         }
 

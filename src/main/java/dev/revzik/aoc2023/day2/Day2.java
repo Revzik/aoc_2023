@@ -10,7 +10,7 @@ public class Day2 {
         int sum = 0;
         GameChecker checker = new GameChecker(12, 13, 14);
 
-        for (String line : FileUtils.readFileToLines(Path.of("day2", "input.txt"))) {
+        for (String line : FileUtils.readFileToLineList(Path.of("day2", "input.txt"))) {
             String[] splitLine = line.split(":");
 
             // part 1
