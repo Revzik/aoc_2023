@@ -23,32 +23,21 @@ public class GameChecker {
         for (String round : rounds) {
             int totalPulledOut = 0;
 
-            String[] colors = round.split(",");
-            for (String color : colors) {
-                if (color.contains(RED_STR)) {
-                    int amount = Integer.parseInt(color.replace(RED_STR, "").trim());
-                    if (amount > redAmount) {
-                        return false;
+            String[] cubeSets = round.split(",");
+            try {
+                for (String cubes : cubeSets) {
+                    if (cubes.contains(RED_STR)) {
+                        totalPulledOut += checkIfExceedsAmount(cubes, RED_STR, redAmount);
                     }
-                    totalPulledOut += amount;
-                }
-
-                if (color.contains(GREEN_STR)) {
-                    int amount = Integer.parseInt(color.replace(GREEN_STR, "").trim());
-                    if (amount > greenAmount) {
-                        return false;
+                    if (cubes.contains(GREEN_STR)) {
+                        totalPulledOut += checkIfExceedsAmount(cubes, GREEN_STR, greenAmount);
                     }
-                    totalPulledOut += amount;
-                }
-
-                if (color.contains(BLUE_STR)) {
-                    int amount = Integer.parseInt(color.replace(BLUE_STR, "").trim());
-                    if (amount > blueAmount) {
-                        return false;
-
+                    if (cubes.contains(BLUE_STR)) {
+                        totalPulledOut += checkIfExceedsAmount(cubes, BLUE_STR, blueAmount);
                     }
-                    totalPulledOut += amount;
                 }
+            } catch (ImpossibleGameException e) {
+                return false;
             }
 
             if (totalPulledOut > maxPulledOut) {
@@ -57,5 +46,52 @@ public class GameChecker {
         }
 
         return maxPulledOut < redAmount + greenAmount + blueAmount;
+    }
+
+    private int checkIfExceedsAmount(String cubes, String color, int targetAmount) {
+        int amount = Integer.parseInt(cubes.replace(color, "").trim());
+        if (amount > targetAmount) {
+            throw new ImpossibleGameException("Exceeded amount for color " + color);
+        }
+        return amount;
+    }
+
+    public int findSetPower(String game) {
+        String[] rounds = game.split(";");
+
+        int maxRed = 0;
+        int maxGreen = 0;
+        int maxBlue = 0;
+
+        for (String round : rounds) {
+            String[] cubeSets = round.split(",");
+            for (String cubes : cubeSets) {
+                if (cubes.contains(RED_STR)) {
+                    maxRed = getColorMaximum(cubes, RED_STR, maxRed);
+                }
+                if (cubes.contains(GREEN_STR)) {
+                    maxGreen = getColorMaximum(cubes, GREEN_STR, maxGreen);
+                }
+                if (cubes.contains(BLUE_STR)) {
+                    maxBlue = getColorMaximum(cubes, BLUE_STR, maxBlue);
+                }
+            }
+        }
+
+        return maxRed * maxGreen * maxBlue;
+    }
+
+    private static int getColorMaximum(String cubes, String color, int currentMax) {
+        int amount = Integer.parseInt(cubes.replace(color, "").trim());
+        if (amount > currentMax) {
+            currentMax = amount;
+        }
+        return currentMax;
+    }
+
+    private static class ImpossibleGameException extends RuntimeException {
+        ImpossibleGameException(String message) {
+            super(message);
+        }
     }
 }

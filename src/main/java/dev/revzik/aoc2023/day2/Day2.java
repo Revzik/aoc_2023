@@ -12,13 +12,21 @@ public class Day2 {
 
         for (String line : FileUtils.readFileToLines(Path.of("day2", "input.txt"))) {
             String[] splitLine = line.split(":");
-            int gameId = Integer.parseInt(splitLine[0].replace("Game", "").trim());
 
-            if (checker.isGamePossible(splitLine[1].trim())) {
-                sum += gameId;
-            }
+            // part 1
+//            sum += getIdIfPossible(splitLine, checker);
+
+            // part 2
+            sum += checker.findSetPower(splitLine[1].trim());
         }
 
         System.out.println(sum);
+    }
+
+    private static int getIdIfPossible(String[] splitLine, GameChecker checker) {
+        if (checker.isGamePossible(splitLine[1].trim())) {
+            return Integer.parseInt(splitLine[0].replace("Game", "").trim());
+        }
+        return 0;
     }
 }
