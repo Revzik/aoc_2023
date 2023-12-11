@@ -1,12 +1,27 @@
 package dev.revzik.aoc2023;
 
+import dev.revzik.aoc2023.day3.SchemaAnalyzer;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Day3Test {
-    private static final String[] INPUT = {
+    private static final String[] INPUT1 = {
+            "467..114..",
+            "...*......",
+            "...35..633",
+            "......#...",
+            "617*......",
+            ".....+.58.",
+            "..592.....",
+            "......755.",
+            "...$.*....",
+            ".664.598.."
+    };
+
+    private static final String[] INPUT2 = {
             "467..114..",
             "...*......",
             "..35..633.",
@@ -16,24 +31,50 @@ public class Day3Test {
             "..592.....",
             "......755.",
             "...$.*....",
-            ".664.598.."
+            ".664.598..",
     };
-    private final List<Character> digits = List.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 
     @Test
-    void tmpTest() {
+    void findPartsTest() {
+        SchemaAnalyzer analyzer = new SchemaAnalyzer(INPUT2);
+        Assertions.assertEquals(4361, analyzer.findPartNumbersSum());
+    }
+
+    @Test
+    void charAttemptTest() {
         //          0123456789
-        String a = "..35..633"; // fix this case
+        char[] a = "...35..633".toCharArray(); // fix this case
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] == '.') {
+                continue;
+            }
+            if (SchemaAnalyzer.isDigit(a[i])) {
+                int length = 1;
+                while (i + length != a.length && SchemaAnalyzer.isDigit(a[i + length])) {
+                    length++;
+                }
+                System.out.printf("Number: %s, Beginning: %d, End %d\n", String.valueOf(a, i, length), i, i + length - 1);
+                i += length;
+            }
+        }
+    }
+
+    @Test
+    void stringAttemptTest() {
+        //          0123456789
+        String a = "...35..633";
         for (int i = 0; i < a.length(); i++) {
             if (a.charAt(i) == '.') {
                 continue;
             }
-            if (digits.contains(a.charAt(i))) {
-                int end = a.indexOf('.', i) - 1;
-                System.out.printf("Beginning: %d, End %d\n", i, end);
-                i = end + 1;
+            if (SchemaAnalyzer.isDigit(a.charAt(i))) {
+                int end = i + 1;
+                while (end != a.length() && SchemaAnalyzer.isDigit(a.charAt(end))) {
+                    end++;
+                }
+                System.out.printf("Number: %s, Beginning: %d, End %d\n", a.substring(i, end), i, end - 1);
+                i = end;
             }
         }
-
     }
 }

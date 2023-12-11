@@ -12,7 +12,7 @@ public class FileUtils {
     }
 
     public static String[] readFileToLineArray(Path path) {
-        return (String[]) readFileToStream(path).toArray();
+        return readFileToStream(path).toArray(String[]::new);
     }
 
     private static Stream<String> readFileToStream(Path path) {
