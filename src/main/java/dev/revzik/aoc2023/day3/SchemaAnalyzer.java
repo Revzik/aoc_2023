@@ -1,28 +1,34 @@
 package dev.revzik.aoc2023.day3;
 
-import javax.swing.plaf.IconUIResource;
 import java.util.*;
 
 public class SchemaAnalyzer {
 
     private final String[] schema;
 
-    private final int leftBoundary = 0;
-    private final int rightBoundary;
-    private final int topBoundary = 0;
-    private final int bottomBoundary;
-
     public SchemaAnalyzer(String[] schema) {
-        this.schema = schema;
-        this.bottomBoundary = schema.length - 1;
-        this.rightBoundary = schema[0].length() - 1;
+        this.schema = expandSchema(schema);
+    }
+
+    private String[] expandSchema(String[] schema) {
+        int newWidth = schema[0].length() + 2;
+        int newHeight = schema.length + 2;
+        String emptyLine = ".".repeat(newWidth);
+
+        String[] newSchema = new String[newHeight];
+        newSchema[0] = emptyLine;
+        newSchema[newHeight - 1] = emptyLine;
+        for (int i = 0; i < schema.length; i++) {
+            newSchema[i + 1] = "." + schema[i] + ".";
+        }
+        return newSchema;
     }
 
     public int findPartNumbersSum() {
         int sum = 0;
-        for (int i = 0; i < schema.length; i++) {
+        for (int i = 1; i < schema.length - 1; i++) {
             String schematicLine = schema[i];
-            for (int j = 0; j < schematicLine.length(); j++) {
+            for (int j = 1; j < schematicLine.length() - 1; j++) {
                 if (isEmpty(schematicLine.charAt(j))) {
                     continue;
                 }
@@ -42,9 +48,9 @@ public class SchemaAnalyzer {
         Map<Coordinate, Integer> gearRatios = new HashMap<>();
         Map<Coordinate, Integer> usedGears = new HashMap<>();
 
-        for (int i = 0; i < schema.length; i++) {
+        for (int i = 1; i < schema.length - 1; i++) {
             String schematicLine = schema[i];
-            for (int j = 0; j < schematicLine.length(); j++) {
+            for (int j = 1; j < schematicLine.length() - 1; j++) {
                 if (isEmpty(schematicLine.charAt(j))) {
                     continue;
                 }
@@ -69,14 +75,12 @@ public class SchemaAnalyzer {
     }
 
     private boolean checkIfValidNumber(int row, int begin, int end) {
-        if ((begin - 1 > leftBoundary && isPart(schema[row].charAt(begin - 1))) ||
-                (end + 1 < rightBoundary && isPart(schema[row].charAt(end + 1)))) {
+        if (isPart(schema[row].charAt(begin - 1)) || isPart(schema[row].charAt(end + 1))) {
             return true;
         }
 
         for (int i = begin - 1; i <= end + 1; i++) {
-            if ((row - 1 > topBoundary && i > leftBoundary && i < rightBoundary && isPart(schema[row - 1].charAt(i))) ||
-                    (row + 1 < bottomBoundary && i > leftBoundary && i < rightBoundary && isPart(schema[row + 1].charAt(i)))) {
+            if (isPart(schema[row - 1].charAt(i)) || isPart(schema[row + 1].charAt(i))) {
                 return true;
             }
         }
@@ -85,18 +89,18 @@ public class SchemaAnalyzer {
     }
 
     private Optional<Coordinate> checkIfNextToGearSymbol(int row, int begin, int end) {
-        if (begin - 1 > leftBoundary && isGearSymbol(schema[row].charAt(begin - 1))) {
+        if (isGearSymbol(schema[row].charAt(begin - 1))) {
             return Optional.of(new Coordinate(begin - 1, row));
         }
-        if (end + 1 < rightBoundary && isGearSymbol(schema[row].charAt(end + 1))) {
-            return Optional.of(new Coordinate(begin + 1, row));
+        if (isGearSymbol(schema[row].charAt(end + 1))) {
+            return Optional.of(new Coordinate(end + 1, row));
         }
 
         for (int i = begin - 1; i <= end + 1; i++) {
-            if (row - 1 > topBoundary && i > leftBoundary && i < rightBoundary && isGearSymbol(schema[row - 1].charAt(i))) {
+            if (isGearSymbol(schema[row - 1].charAt(i))) {
                 return Optional.of(new Coordinate(i, row - 1));
             }
-            if (row + 1 < bottomBoundary && i > leftBoundary && i < rightBoundary && isGearSymbol(schema[row + 1].charAt(i))) {
+            if (isGearSymbol(schema[row + 1].charAt(i))) {
                 return Optional.of(new Coordinate(i, row + 1));
             }
         }

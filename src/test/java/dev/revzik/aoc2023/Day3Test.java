@@ -85,7 +85,7 @@ public class Day3Test {
         analyzer = new SchemaAnalyzer(INPUT4);
         Assertions.assertEquals(413, analyzer.findPartNumbersSum());
 
-        analyzer = new SchemaAnalyzer(INPUT4);
+        analyzer = new SchemaAnalyzer(INPUT5);
         Assertions.assertEquals(925, analyzer.findPartNumbersSum());
     }
 
