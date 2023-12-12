@@ -10,6 +10,7 @@ public class Day3 {
     public static void main(String[] args) {
         String[] schematicLines = FileUtils.readFileToLineArray(Path.of("day3", "input.txt"));
         SchemaAnalyzer analyzer = new SchemaAnalyzer(schematicLines);
-        System.out.println(analyzer.findPartNumbersSum());
+//        System.out.println(analyzer.findPartNumbersSum());
+        System.out.println(analyzer.findGearRatioSum());
     }
 }
