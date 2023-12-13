@@ -36,17 +36,21 @@ public class Day4 {
             String[] splitCard = card.split(":");
             int cardId = Integer.parseInt(splitCard[0].replace("Card", "").trim()) - 1;
             String[] numbers = splitCard[1].split("\\|");
-            long cardValue = getNumberList(numbers[0]).stream()
-                    .filter(getNumberList(numbers[1])::contains)
-                    .count();
-            for (int i = 1; i <= cardValue && cardId + i < cards.length - 1; i++) {
+            long cardValue = countWinningNumbers(getNumberList(numbers[0]), getNumberList(numbers[1]));
+            for (int i = 1; i <= cardValue && cardId + i < cards.length; i++) {
                 int nextCardId = cardId + i;
                 long currentCopyAmount = cardCopies[cardId];
                 cardCopies[nextCardId] += currentCopyAmount;
             }
         }
 
-        return Arrays.stream(cardCopies).reduce(Long::sum).orElse(0L); // returns too low somehow
+        return Arrays.stream(cardCopies).reduce(Long::sum).orElse(0L);
+    }
+
+    private static long countWinningNumbers(List<Integer> winningNumbers, List<Integer> playerNumbers) {
+        return winningNumbers.stream()
+                .filter(playerNumbers::contains)
+                .count();
     }
 
     private static List<Integer> getNumberList(String numberString) {
@@ -60,14 +64,5 @@ public class Day4 {
                 .filter(playerNumbers::contains)
                 .count();
         return winningCount == 0 ? 0 : (int) Math.pow(2, winningCount - 1);
-    }
-
-    private static Map<Integer, Long> initializeCardMap(int cardAmount) {
-        // Assumes cards are ordered from 1 to cardAmount, with no empty spaces between numbers
-        Map<Integer, Long> cardMap = new HashMap<>();
-        for (int i = 1; i <= cardAmount; i++) {
-            cardMap.put(i, 1L);
-        }
-        return cardMap;
     }
 }
